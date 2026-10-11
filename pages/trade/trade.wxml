@@ -1,0 +1,71 @@
+<view wx:if="{{!session}}" class="empty">请先在「总览」页登录</view>
+
+<block wx:else>
+  <!-- 记一笔 -->
+  <view class="card">
+    <view class="card-title"><text>记一笔</text><text class="muted">E大要求记录买入时估值</text></view>
+    <view class="input-line">
+      <text class="label">账户</text>
+      <picker range="{{accountNames}}" value="{{accountIdx}}" bindchange="onAccountChange" style="flex:1;">
+        <view style="color:#8c1f28;font-weight:600;">{{accountNames[accountIdx]}} ▾</view>
+      </picker>
+    </view>
+    <view class="input-line">
+      <text class="label">标的</text>
+      <picker range="{{names}}" value="{{indexIdx}}" bindchange="onIndexChange" style="flex:1;">
+        <view>{{names[indexIdx]}} ▾</view>
+      </picker>
+    </view>
+    <view class="input-line">
+      <text class="label">方向</text>
+      <view class="row" style="gap:16rpx;">
+        <text class="tag" style="margin:0;background:{{direction==='buy'?'#c0392b':'#f2f2f2'}};color:{{direction==='buy'?'#fff':'#666'}};" data-dir="buy" bindtap="onDir">买入</text>
+        <text class="tag" style="margin:0;background:{{direction==='sell'?'#1e8e3e':'#f2f2f2'}};color:{{direction==='sell'?'#fff':'#666'}};" data-dir="sell" bindtap="onDir">卖出</text>
+        <text class="tag" style="margin:0;background:{{direction==='hold'?'#5b6b8c':'#f2f2f2'}};color:{{direction==='hold'?'#fff':'#666'}};" data-dir="hold" bindtap="onDir">持仓</text>
+      </view>
+    </view>
+    <view class="input-line">
+      <text class="label">金额（元）</text>
+      <input type="digit" placeholder="{{direction === 'hold' ? '填该标的实际持仓总额，将直接覆盖' : '如 10000'}}" value="{{amount}}" data-field="amount" bindinput="onInput" />
+    </view>
+    <view class="input-line">
+      <text class="label">成交价</text>
+      <input type="digit" placeholder="选填" value="{{price}}" data-field="price" bindinput="onInput" />
+    </view>
+    <view class="input-line">
+      <text class="label">估值分位 %</text>
+      <input type="digit" placeholder="0-100，自动带出" value="{{pct}}" data-field="pct" bindinput="onInput" />
+    </view>
+    <view class="input-line" style="border-bottom:none;">
+      <text class="label">备注</text>
+      <input placeholder="选填，如 网格第2格" value="{{note}}" data-field="note" bindinput="onInput" />
+    </view>
+    <button class="btn-primary" style="margin-top:20rpx;" loading="{{saving}}" bindtap="onSave">保存并更新持仓</button>
+  </view>
+
+  <!-- 日志列表 -->
+  <view class="card">
+    <view class="card-title"><text>交易记录</text><text class="muted">{{accounts[accountIdx].name}} · {{trades.length}}条</text></view>
+    <view wx:if="{{trades.length === 0}}" class="empty">还没有交易记录</view>
+    <view wx:for="{{trades}}" wx:key="id" class="row between" style="padding:16rpx 0;border-bottom:1rpx solid #f5f5f5;">
+      <view style="flex:1;">
+        <view>
+          <text style="font-weight:600;">{{item.name}}</text>
+          <text class="{{item.dirClass}}" style="margin-left:12rpx;font-weight:600;">{{item.dirText}}</text>
+          <text style="margin-left:12rpx;">{{item.amount/10000}}万</text>
+        </view>
+        <view class="muted" style="margin-top:4rpx;">
+          {{item.timeText}}
+          <text wx:if="{{item.price}}"> · 价{{item.price}}</text>
+          <text wx:if="{{item.valuation_pct !== null}}"> · 分位{{item.valuation_pct}}%</text>
+          <text wx:if="{{item.note}}"> · {{item.note}}</text>
+        </view>
+      </view>
+      <text class="muted" style="padding:0 16rpx;"
+        data-id="{{item.id}}" data-symbol="{{item.symbol}}" data-direction="{{item.direction}}" data-amount="{{item.amount}}"
+        bindtap="onDelete">删除</text>
+    </view>
+  </view>
+
+  <view class="risk-tip">纪律提醒：严格分档分批买入，不一把梭；低估浮亏不割肉，只按估值计划加仓。</view>
+</block>

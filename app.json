@@ -1,0 +1,31 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/valuation/valuation",
+    "pages/me/me",
+    "pages/trade/trade",
+    "pages/watch/watch",
+    "pages/rules/rules"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#8c1f28",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "长赢组合助手",
+    "backgroundColor": "#f5f6fa"
+  },
+  "tabBar": {
+    "color": "#8a8a8a",
+    "selectedColor": "#c0392b",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "总览" },
+      { "pagePath": "pages/valuation/valuation", "text": "估值提醒" },
+      { "pagePath": "pages/trade/trade", "text": "交易日志" },
+      { "pagePath": "pages/watch/watch", "text": "关注标的" },
+      { "pagePath": "pages/me/me", "text": "我的" }
+    ]
+  },
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}

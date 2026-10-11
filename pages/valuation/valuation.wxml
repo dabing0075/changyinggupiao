@@ -1,0 +1,73 @@
+<view wx:if="{{!session}}" class="empty">请先在「总览」页登录</view>
+<view wx:elif="{{loading}}" class="empty">加载中…</view>
+
+<block wx:else>
+  <view class="card" style="padding:20rpx 28rpx;">
+    <view class="muted">八大指数估值分位与点位由云端自动更新（{{marketTime || '—'}}），档位变化会同步生成「消息」提醒。当前市场温度：<text style="color:#8c1f28;">{{tempLabel}}</text>，权益上限 {{equityCapAmount/10000}}万。</view>
+  </view>
+
+  <view wx:for="{{cards}}" wx:key="symbol" class="card">
+    <view class="row between" style="margin-bottom:4rpx;">
+      <view>
+        <text style="font-size:32rpx;font-weight:700;">{{item.indexName}}</text>
+        <text class="muted" style="margin-left:12rpx;">{{item.indexCode}}</text>
+      </view>
+      <text class="tag" style="background:{{item.tierBg}};color:{{item.tierColor}};margin-right:0;">{{item.tierLabel}}</text>
+    </view>
+    <view class="muted">{{item.typeLabel}} · {{item.pos}}</view>
+
+    <!-- 指数点位与估值分位（实时） -->
+    <view class="row between" style="margin-top:16rpx;padding:18rpx 20rpx;background:#f8f9fb;border-radius:12rpx;">
+      <view>
+        <view class="muted" style="font-size:22rpx;">指数点位</view>
+        <view style="font-size:36rpx;font-weight:700;">{{item.pointsText}}</view>
+      </view>
+      <view style="text-align:center;">
+        <view class="muted" style="font-size:22rpx;">涨跌幅</view>
+        <view style="font-size:32rpx;font-weight:700;" class="{{item.chgClass}}">{{item.chgText}}</view>
+      </view>
+      <view style="text-align:right;">
+        <view class="muted" style="font-size:22rpx;">十年PE分位</view>
+        <view style="font-size:32rpx;font-weight:700;color:{{item.pctColor}};">{{item.pctText}}</view>
+      </view>
+    </view>
+
+    <!-- 红利指数：股息率、股息率分位与加权有效分位 -->
+    <block wx:if="{{item.dividend}}">
+      <view class="row between" style="margin-top:12rpx;padding:18rpx 20rpx;background:#fdf6ec;border-radius:12rpx;">
+        <view>
+          <view class="muted" style="font-size:22rpx;">股息率(TTM)</view>
+          <view style="font-size:32rpx;font-weight:700;color:#8c1f28;">{{item.dyText}}</view>
+        </view>
+        <view style="text-align:center;">
+          <view class="muted" style="font-size:22rpx;">股息率十年分位</view>
+          <view style="font-size:32rpx;font-weight:700;color:#8c1f28;">{{item.dyPctText}}</view>
+        </view>
+        <view style="text-align:right;">
+          <view class="muted" style="font-size:22rpx;">有效分位</view>
+          <view style="font-size:32rpx;font-weight:700;color:{{item.tierColor}};">{{item.effPctText}}</view>
+        </view>
+      </view>
+      <view class="muted" style="font-size:20rpx;margin-top:8rpx;">有效分位 = PE分位×10% + (100−股息率分位)×90%，分位越高越贵；档位标签与操作提醒按有效分位判定。</view>
+    </block>
+
+    <!-- 操作提醒卡 -->
+    <view style="margin-top:16rpx;padding:20rpx;border-radius:12rpx;background:{{item.tierBg}};">
+      <view style="font-weight:700;color:{{item.actionColor}};">{{item.plan.title}}</view>
+      <view style="font-size:24rpx;color:#555;margin-top:6rpx;line-height:1.6;">{{item.plan.detail}}</view>
+      <view wx:if="{{item.redline}}" style="font-size:22rpx;color:#c0392b;margin-top:8rpx;">红线：估值>70%分位，禁止新增买入</view>
+    </view>
+
+    <!-- 网格参考 -->
+    <view wx:if="{{item.grid}}" class="row between muted" style="margin-top:12rpx;">
+      <text>网格步长{{item.grid.stepPct}}%（按点位）</text>
+      <text>上格卖 {{item.grid.sellAt}}</text>
+      <text>下格买 {{item.grid.buyAt}}</text>
+    </view>
+    <view wx:if="{{item.grid && item.plan.tier && item.plan.tier.key === 'over'}}" class="muted" style="margin-top:6rpx;color:#1e8e3e;">
+      已进入高估区间：行业网格应关闭，全部止盈。
+    </view>
+  </view>
+
+  <view class="risk-tip">档位口径：低估≤30% · 合理30~70% · 偏高70~85% · 高估>85%。红利指数同时看股息率：有效分位 = PE分位×10% + (100−股息率分位)×90%。卫星行业（医药/消费/信息/中概互联网）高估清仓，恒生科技目标持仓为0仅估值跟踪；核心宽基高位只降仓不清仓。实际交易使用对应ETF。</view>
+</block>

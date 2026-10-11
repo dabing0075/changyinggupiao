@@ -1,0 +1,110 @@
+<view wx:if="{{!session}}" class="empty">请先在「总览」页登录</view>
+<view wx:elif="{{loading}}" class="empty">加载中…</view>
+
+<block wx:else>
+  <!-- 账户总览 -->
+  <view class="card" wx:if="{{overview}}" style="background:linear-gradient(135deg,#8c1f28 0%,#a52834 100%);color:#fff;">
+    <view class="row between" style="margin-bottom:14rpx;">
+      <view style="font-size:32rpx;font-weight:700;">{{overview.name}}</view>
+      <view style="font-size:22rpx;opacity:0.85;">{{overview.tempLabel}}</view>
+    </view>
+    <view class="row between">
+      <view>
+        <view style="font-size:22rpx;opacity:0.8;">资金总额</view>
+        <view style="font-size:34rpx;font-weight:700;">{{overview.total}}</view>
+      </view>
+      <view style="text-align:center;">
+        <view style="font-size:22rpx;opacity:0.8;">权益 / 上限</view>
+        <view style="font-size:30rpx;font-weight:700;">{{overview.equityNow}}<text style="font-size:22rpx;font-weight:400;"> / {{overview.equityCap}}</text></view>
+      </view>
+      <view style="text-align:right;">
+        <view style="font-size:22rpx;opacity:0.8;">现金备用</view>
+        <view style="font-size:30rpx;font-weight:700;">{{overview.cash}}</view>
+      </view>
+    </view>
+    <view style="font-size:22rpx;opacity:0.85;margin-top:12rpx;">权益占比 {{overview.ratio}}%（{{overview.tempLabel}}上限 {{overview.capPct}}%）</view>
+  </view>
+
+  <!-- 账户管理 -->
+  <view class="card">
+    <view class="card-title"><text>我的账户</text><text class="muted">{{accounts.length}}个 · 点击切换</text></view>
+    <view wx:for="{{accounts}}" wx:key="id" class="row between"
+      style="padding:18rpx 16rpx;margin:0 -16rpx;border-radius:12rpx;border-bottom:1rpx solid #f5f5f5;{{item.active ? 'background:#fdf0ee;' : ''}}">
+      <view class="row" style="flex:1;" data-id="{{item.id}}" bindtap="onSwitchAccount">
+        <view style="width:32rpx;height:32rpx;border-radius:50%;border:2rpx solid {{item.active ? '#c0392b' : '#ccc'}};margin-right:16rpx;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <view wx:if="{{item.active}}" style="width:18rpx;height:18rpx;border-radius:50%;background:#c0392b;"></view>
+        </view>
+        <view>
+          <view style="font-weight:{{item.active ? '700' : '400'}};color:{{item.active ? '#c0392b' : '#333'}};">{{item.name}}
+            <text wx:if="{{item.active}}" style="font-size:20rpx;font-weight:400;color:#fff;background:#c0392b;border-radius:6rpx;padding:2rpx 10rpx;margin-left:10rpx;">当前</text>
+          </view>
+          <view class="muted" style="font-size:22rpx;">资金 {{item.total_capital/10000}}万</view>
+        </view>
+      </view>
+      <view class="row" style="gap:16rpx;">
+        <text class="muted" style="font-size:24rpx;" data-id="{{item.id}}" data-name="{{item.name}}" data-capital="{{item.total_capital}}" bindtap="onEditCapital">改资金</text>
+        <text style="font-size:24rpx;color:#c0392b;" data-id="{{item.id}}" data-name="{{item.name}}" bindtap="onDeleteAccount">删除</text>
+      </view>
+    </view>
+    <!-- 账户总计（可选中，选中后总览页显示全部账户汇总） -->
+    <view class="row between"
+      style="padding:18rpx 16rpx;margin:4rpx -16rpx 0;border-radius:12rpx;border-top:2rpx solid #eee;{{allActive ? 'background:#fdf0ee;' : ''}}"
+      bindtap="onSwitchAll">
+      <view class="row" style="flex:1;">
+        <view style="width:32rpx;height:32rpx;border-radius:50%;border:2rpx solid {{allActive ? '#c0392b' : '#ccc'}};margin-right:16rpx;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <view wx:if="{{allActive}}" style="width:18rpx;height:18rpx;border-radius:50%;background:#c0392b;"></view>
+        </view>
+        <view>
+          <view style="font-weight:{{allActive ? '700' : '400'}};color:{{allActive ? '#c0392b' : '#333'}};">账户总计
+            <text wx:if="{{allActive}}" style="font-size:20rpx;font-weight:400;color:#fff;background:#c0392b;border-radius:6rpx;padding:2rpx 10rpx;margin-left:10rpx;">当前</text>
+          </view>
+          <view class="muted" style="font-size:22rpx;">全部账户汇总视图</view>
+        </view>
+      </view>
+      <view style="font-weight:700;color:#8c1f28;">资金 {{accountsTotal}}</view>
+    </view>
+    <!-- 新建账户 -->
+    <view style="margin-top:16rpx;">
+      <view class="input-line">
+        <text class="label">账户名称</text>
+        <input placeholder="如 场内主账户 / 定投账户" value="{{newName}}" bindinput="onNewName" />
+      </view>
+      <view class="input-line" style="border-bottom:none;">
+        <text class="label">资金总额</text>
+        <input type="digit" placeholder="如 1000000" value="{{newCapital}}" bindinput="onNewCapital" />
+        <button size="mini" class="btn-primary" style="margin-left:16rpx;" loading="{{adding}}" bindtap="onAddAccount">新建</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 消息中心（当前账户） -->
+  <view class="card">
+    <view class="card-title">
+      <text>消息提醒</text>
+      <text wx:if="{{syncError}}" style="font-size:22rpx;color:#c0392b;">{{syncError}}</text>
+      <text wx:else class="muted">{{syncing ? '同步中…' : (marketTime ? '行情 ' + marketTime : '')}}</text>
+    </view>
+    <view class="row" style="gap:16rpx;margin-bottom:8rpx;">
+      <button size="mini" class="btn-primary" bindtap="onSubscribe">开启推送提醒</button>
+      <button size="mini" class="btn-plain" bindtap="onReadAll">全部已读</button>
+      <button size="mini" class="btn-plain" bindtap="onManualRefresh">刷新</button>
+      <button size="mini" class="btn-plain" bindtap="goRules">体系规则</button>
+    </view>
+
+    <view wx:if="{{messages.length === 0}}" class="empty" style="padding:40rpx 0;">
+      暂无消息。行情触及网格买卖点、支撑/压力位，或估值进入低估/高估区间时会自动提醒。
+    </view>
+    <view wx:for="{{messages}}" wx:key="id" style="padding:18rpx 0;border-bottom:1rpx solid #f5f5f5;{{item.read ? 'opacity:0.55;' : ''}}"
+      data-id="{{item.id}}" data-read="{{item.read}}" data-msg-key="{{item.msg_key}}" bindtap="onTapMessage">
+      <view class="row" style="margin-bottom:6rpx;">
+        <text wx:if="{{!item.read}}" style="width:14rpx;height:14rpx;border-radius:50%;background:#c0392b;margin-right:12rpx;flex-shrink:0;"></text>
+        <text class="tag" style="background:{{item.level === 1 ? '#fdeceb' : '#eef1f7'}};color:{{item.level === 1 ? '#c0392b' : '#5b6b8c'}};">{{item.levelText}}</text>
+        <text style="font-weight:600;flex:1;">{{item.title}}</text>
+        <text class="muted" style="font-size:22rpx;">{{item.timeText}}</text>
+      </view>
+      <view class="muted" style="line-height:1.6;">{{item.detail}}</view>
+    </view>
+  </view>
+
+  <view class="risk-tip">消息基于云端行情快照（交易时段约每小时更新）与当前账户的持仓/网格/估值规则实时生成，仅供参考，不构成投资建议。</view>
+</block>

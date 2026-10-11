@@ -1,0 +1,103 @@
+page {
+  background: #f5f6fa;
+  font-size: 28rpx;
+  color: #2c2c2c;
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  margin: 20rpx 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.between {
+  justify-content: space-between;
+}
+
+.muted {
+  color: #9a9a9a;
+  font-size: 24rpx;
+}
+
+.up {
+  color: #c0392b;
+}
+
+.down {
+  color: #1e8e3e;
+}
+
+.btn-primary {
+  background: #c0392b;
+  color: #fff;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+}
+
+.btn-plain {
+  background: #fff;
+  color: #c0392b;
+  border: 1rpx solid #c0392b;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  margin-right: 12rpx;
+}
+
+.input-line {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.input-line .label {
+  width: 180rpx;
+  color: #666;
+  font-size: 26rpx;
+}
+
+.input-line input {
+  flex: 1;
+  font-size: 28rpx;
+}
+
+.empty {
+  text-align: center;
+  color: #9a9a9a;
+  padding: 60rpx 0;
+  font-size: 26rpx;
+}
+
+.risk-tip {
+  margin: 24rpx;
+  padding: 20rpx 24rpx;
+  background: #fdf6ec;
+  color: #b26a00;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  line-height: 1.6;
+}

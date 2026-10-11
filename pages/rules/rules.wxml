@@ -1,0 +1,82 @@
+<!-- 估值档位买卖对照表 -->
+<view class="card">
+  <view class="card-title"><text>估值档位买卖对照</text></view>
+  <view class="muted" style="margin-bottom:12rpx;">目标/上限均为标的在权益中的占比；红利看股息率+PE，其余看十年PE分位。低估≤30% / 合理30~70% / 偏高70~85% / 高估>85%。</view>
+  <scroll-view scroll-x style="white-space:nowrap;">
+    <view class="rtable">
+      <view class="rtr rth">
+        <text class="rtc" style="width:140rpx;">指数</text>
+        <text class="rtc" style="width:100rpx;">目标</text>
+        <text class="rtc" style="width:100rpx;">上限</text>
+        <text class="rtc" style="width:300rpx;">低估≤30%</text>
+        <text class="rtc" style="width:240rpx;">合理30~70%</text>
+        <text class="rtc" style="width:220rpx;">偏高70~85%</text>
+        <text class="rtc" style="width:260rpx;">高估>85%</text>
+      </view>
+      <view wx:for="{{indices}}" wx:key="symbol" class="rtr">
+        <text class="rtc" style="width:140rpx;font-weight:600;">{{item.name}}</text>
+        <text class="rtc" style="width:100rpx;">{{item.targetWeight}}%</text>
+        <text class="rtc" style="width:100rpx;">{{item.capWeight ? item.capWeight + '%' : '—'}}</text>
+        <text class="rtc" style="width:300rpx;color:#c0392b;">{{item.lowText}}</text>
+        <text class="rtc" style="width:240rpx;">{{item.fairText}}</text>
+        <text class="rtc" style="width:220rpx;color:#b26a00;">{{item.highText}}</text>
+        <text class="rtc" style="width:260rpx;color:#1e8e3e;">{{item.overText}}</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+
+<!-- 总仓位控制 -->
+<view class="card">
+  <view class="card-title"><text>总仓位动态控制（保命规则）</text></view>
+  <view wx:for="{{temps}}" wx:key="key" class="row between" style="padding:12rpx 0;border-bottom:1rpx solid #f5f5f5;">
+    <text style="font-weight:600;">{{item.label}}</text>
+    <text class="muted">{{item.desc}}</text>
+  </view>
+</view>
+
+<!-- 再平衡与网格 -->
+<view class="card">
+  <view class="card-title"><text>再平衡纪律</text></view>
+  <view class="muted" style="line-height:1.8;">
+    · 时间触发：每半年（6个月）固定做一次组合检视再平衡{'\n'}
+    · 幅度触发：任意标的实际仓位偏离目标 ±5%，立即启动{'\n'}
+    · 原则：涨多的卖一部分，加仓跌下去、低于目标仓位的低估品种{'\n'}
+    · 核心宽基（红利/A500）一般不一次性清仓；卫星行业高估时再平衡直接降仓
+  </view>
+  <view class="card-title" style="margin-top:24rpx;"><text>网格辅助（仅底仓建好后）</text></view>
+  <view class="muted" style="line-height:1.8;">
+    · 核心（红利/A500）：步长5%，涨5%卖一格、跌5%买回一格；红利可放宽至6%{'\n'}
+    · 创业板及卫星（医药/消费/信息/中概互联网）：步长6%~8%{'\n'}
+    · 行业网格一旦进入高估区间，关闭网格、全部止盈{'\n'}
+    · ⚠️ 单边熊市不要频繁网格，优先用现金按估值分档大笔加仓
+  </view>
+</view>
+
+<!-- 红线 -->
+<view class="card">
+  <view class="card-title"><text style="color:#c0392b;">禁止事项（体系红线）</text></view>
+  <view wx:for="{{redlines}}" wx:key="index" class="row" style="padding:10rpx 0;">
+    <text style="color:#c0392b;margin-right:12rpx;">✕</text>
+    <text style="flex:1;line-height:1.6;">{{item}}</text>
+  </view>
+</view>
+
+<!-- 月度清单 -->
+<view class="card">
+  <view class="card-title"><text>月度执行清单</text></view>
+  <view wx:for="{{checklist}}" wx:key="index" class="row" style="padding:10rpx 0;">
+    <text style="color:#8c1f28;margin-right:12rpx;">□</text>
+    <text style="flex:1;line-height:1.6;">{{item}}</text>
+  </view>
+</view>
+
+<!-- 组合逻辑 -->
+<view class="card">
+  <view class="card-title"><text>组合逻辑</text></view>
+  <view class="muted" style="line-height:1.8;">
+    红利、A500、创业板作为核心宽基构成账户基本盘：红利防御、A500均衡、创业板进攻；医药、消费、中概互联网是卫星行业，只抓估值修复行情，信息指数、恒生科技仅估值跟踪（目标持仓0）。各标的持仓不得超过其权益内上限占比（上限比例 = 上限占比 × 权益占比），超限即触发减仓预警。熊市靠现金分批加仓核心，震荡市网格收割波动，牛市高位逐步降仓，卫星高估兑现收益，全程永远保留现金弹药。
+  </view>
+</view>
+
+<view class="risk-tip">风险提示：本页内容仅为基于E大（ETF拯救世界）投资理念的策略推演，不构成投资建议。指数基金有波动亏损风险，请独立审慎决策。</view>

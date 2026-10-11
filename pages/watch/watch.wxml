@@ -1,0 +1,54 @@
+<view wx:if="{{!session}}" class="empty">请先在「总览」页登录</view>
+
+<block wx:else>
+  <!-- 头部状态 -->
+  <view style="padding:28rpx 28rpx 8rpx;">
+    <view style="font-size:36rpx;font-weight:700;color:#8c1f28;">关注标的</view>
+    <view class="muted" style="margin-top:6rpx;">
+      {{items.length}} 只标的 · 行情 {{marketTime || '—'}}
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty">加载中…</view>
+
+  <!-- 空态：导入快照 -->
+  <view wx:elif="{{items.length === 0}}" class="card" style="text-align:center;padding:60rpx 28rpx;">
+    <view style="font-weight:600;margin-bottom:12rpx;">关注列表为空</view>
+    <view class="muted" style="margin-bottom:24rpx;">一键导入复盘快照的17只标的（含支撑/压力位与操作提示）</view>
+    <button class="btn-primary" loading="{{importing}}" bindtap="onImport">导入复盘快照</button>
+  </view>
+
+  <!-- 触发提示条 -->
+  <view wx:if="{{!loading && triggered > 0}}" class="card" style="padding:18rpx 28rpx;background:#fdeceb;border:1rpx solid #f2c9c2;">
+    <text style="color:#c0392b;font-weight:600;">{{triggered}} 只标的触及低吸/减仓区，详见「消息」页提醒</text>
+  </view>
+
+  <!-- 标的清单 -->
+  <view wx:for="{{items}}" wx:key="id" class="card" style="padding:22rpx 28rpx;">
+    <view class="row between">
+      <view>
+        <text style="font-size:32rpx;font-weight:700;">{{item.name}}</text>
+        <text class="muted" style="margin-left:12rpx;">{{item.code}}</text>
+      </view>
+      <view style="text-align:right;">
+        <text style="font-size:34rpx;font-weight:700;margin-right:16rpx;">{{item.priceText}}</text>
+        <text class="{{item.changeClass}}" style="font-weight:600;">{{item.changeText}}</text>
+      </view>
+    </view>
+
+    <view class="row between" style="margin-top:14rpx;align-items:center;">
+      <view class="row" style="gap:12rpx;flex-wrap:wrap;">
+        <text wx:if="{{item.buyText}}" class="zone zone-buy">低吸 {{item.buyText}}</text>
+        <text wx:if="{{item.sellText}}" class="zone zone-sell">减仓 {{item.sellText}}</text>
+      </view>
+      <text class="stag {{item.statusCls}}">{{item.statusText}}</text>
+    </view>
+
+    <view style="margin-top:14rpx;padding:14rpx 18rpx;background:#f8f9fb;border-radius:12rpx;font-size:24rpx;color:#555;line-height:1.6;">
+      <text style="color:#8c1f28;">操作提示：</text>{{item.tip || '—'}}
+      <view class="muted" style="margin-top:4rpx;">长线：{{item.long_term}}</view>
+    </view>
+  </view>
+
+  <view class="risk-tip">行情由云端定时任务自动更新，支撑/压力位与操作提示来自最新复盘锚点。触及提醒同步推送到「消息」页。仅供参考，不构成投资建议。</view>
+</block>

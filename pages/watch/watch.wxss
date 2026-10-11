@@ -1,0 +1,38 @@
+.zone {
+  display: inline-block;
+  padding: 6rpx 18rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+}
+
+.zone-buy {
+  background: #fdeceb;
+  color: #c0392b;
+}
+
+.zone-sell {
+  background: #e8f5ec;
+  color: #1e8e3e;
+}
+
+.stag {
+  padding: 6rpx 18rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  flex-shrink: 0;
+}
+
+.st-normal {
+  background: #f2f2f2;
+  color: #9a9a9a;
+}
+
+.st-buy {
+  background: #c0392b;
+  color: #fff;
+}
+
+.st-sell {
+  background: #1e8e3e;
+  color: #fff;
+}

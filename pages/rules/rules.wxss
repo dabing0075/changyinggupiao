@@ -1,0 +1,21 @@
+.rtable {
+  display: inline-block;
+}
+
+.rtr {
+  display: flex;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.rth {
+  background: #f8f9fb;
+  font-weight: 600;
+}
+
+.rtc {
+  padding: 16rpx 12rpx;
+  font-size: 22rpx;
+  white-space: normal;
+  line-height: 1.5;
+  flex-shrink: 0;
+}
