@@ -50,5 +50,57 @@
     </view>
   </view>
 
+  <!-- E大「关键点位」 -->
+  <view wx:if="{{keyPoints.length > 0}}" class="kp-wrap">
+    <view class="kp-head">
+      <view class="kp-head-title">E大「关键点位」</view>
+      <view class="kp-head-sub">笔记 {{kpDate}} · 绿色=大支撑 · 橙色=正常区 · 粉色=外太空</view>
+    </view>
+
+    <view class="kp-body">
+    <view wx:for="{{keyPoints}}" wx:key="symbol" class="kp-card">
+      <view class="kp-row-top">
+        <view class="kp-name-wrap">
+          <text class="kp-name">{{item.name}}</text>
+          <text class="kp-code">{{item.code}}</text>
+        </view>
+        <view class="kp-price-wrap">
+          <view class="kp-price">{{item.priceText}}</view>
+          <view class="kp-asof">{{item.asOfText}}</view>
+        </view>
+      </view>
+
+      <view class="kp-dist-row">
+        <text class="kp-dist">距离大支撑：<text class="{{item.toSupCls}}">{{item.toSupText}}</text></text>
+        <text wx:if="{{item.toSkyText}}" class="kp-dist">距离外太空：<text class="{{item.toSkyCls}}">{{item.toSkyText}}</text></text>
+        <text wx:if="{{item.supDriftText}}" class="kp-drift">{{item.supDriftText}}</text>
+      </view>
+
+      <view class="kp-bar">
+        <view wx:for="{{item.segments}}" wx:for-item="seg" wx:key="id" class="kp-seg {{seg.cls}}" style="width:{{seg.width}}%;"></view>
+        <view wx:for="{{item.marks}}" wx:for-item="mk" wx:key="id" class="kp-mark {{mk.cls}}" style="left:{{mk.left}}%;"></view>
+        <view wx:if="{{item.band}}" class="kp-band" style="left:{{item.band.left}}%;width:{{item.band.width}}%;"></view>
+        <view class="kp-now" style="left:{{item.priceLeft}}%;"></view>
+      </view>
+
+      <view class="kp-label-layer">
+        <view class="kp-label {{item.supAlign}}" style="left:{{item.supLeft}}%;">
+          <text class="kp-label-num">{{item.supText}}</text>
+          <text class="kp-label-txt">{{item.supLabel}}</text>
+        </view>
+        <view wx:if="{{item.skyText}}" class="kp-label {{item.skyAlign}}" style="left:{{item.skyLeft}}%;">
+          <text class="kp-label-num kp-red">{{item.skyText}}</text>
+          <text class="kp-label-txt kp-red">{{item.skyLabel}}</text>
+        </view>
+      </view>
+
+      <view class="kp-note">{{item.note}}</view>
+      <view wx:if="{{item.supDriftTip}}" class="kp-drift-tip">{{item.supDriftTip}}</view>
+    </view>
+    </view>
+
+    <view class="kp-foot">点位来自 E大笔记原文。收盘点位每个交易日 19:00 随估值任务更新：沪深300、中证500、A500、红利100低波、中证医疗取 ETF.run（与估值提醒页同源），创业板R 取腾讯行情，黄金TD 取新浪「黄金延期 Au(T+D)」。色带按“大支撑→外太空”区间等比映射，仅供参考，不构成投资建议。</view>
+  </view>
+
   <view class="risk-tip">行情由云端定时任务自动更新，支撑/压力位与操作提示来自最新复盘锚点。触及提醒同步推送到「消息」页。仅供参考，不构成投资建议。</view>
 </block>

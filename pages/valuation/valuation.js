@@ -1,5 +1,5 @@
 const store = require('../../utils/store')
-const { INDICES, tierOf, tempOfPct, effPctOf, planFor } = require('../../utils/strategy')
+const { INDICES, tierFor, tierRangeText, dividendRangeText, tempOfPct, effPctOf, planFor } = require('../../utils/strategy')
 const { loadMarket, isTradingHours, fmtTime } = require('../../utils/market')
 
 Page({
@@ -79,7 +79,11 @@ Page({
           : (h.valuation_pct !== null && h.valuation_pct !== undefined ? Number(h.valuation_pct) : null)
         const dyPct = idx && idx.dividend_pct !== null && idx.dividend_pct !== undefined ? Number(idx.dividend_pct) : null
         const effPct = effPctOf(cfg, basePct, dyPct)
-        const plan = planFor(cfg, { ...h, valuation_pct: effPct }, equityCapAmount)
+        const plan = planFor(cfg, {
+          ...h,
+          valuation_pct: effPct,
+          dividend_yield: idx && idx.dividend_yield !== undefined ? idx.dividend_yield : null,
+        }, equityCapAmount)
         // 网格参考：以当前指数点位为锚
         let grid = null
         if (points) {
@@ -93,7 +97,10 @@ Page({
         const actionColor = {
           buy: '#c0392b', dca: '#5b6b8c', stop: '#b26a00', reduce: '#1e8e3e', clear: '#1e8e3e', none: '#9a9a9a',
         }[plan.action]
-        const peTier = tierOf(basePct)
+        const peTier = tierFor(cfg, {
+          valuation_pct: basePct,
+          dividend_yield: idx && idx.dividend_yield !== undefined ? idx.dividend_yield : null,
+        })
         return {
           symbol: cfg.symbol,
           indexName: cfg.indexName, indexCode: cfg.indexCode,
@@ -105,10 +112,21 @@ Page({
           // 十年PE分位：展示数据源原始值（红利不按加权替换）
           pctText: basePct !== null ? basePct + '%' : '--',
           pctColor: peTier ? peTier.color : '#9a9a9a',
+          // 红利按股息率水位分档，区间文案用股息率水位；其余用估值分位区间
+          rangeText: peTier
+            ? (cfg.symbol === 'dividend'
+              ? dividendRangeText(idx && idx.dividend_yield !== undefined ? idx.dividend_yield : null)
+              : tierRangeText(peTier.key, cfg.valuationBasis))
+            : '',
+          basisText: cfg.valuationBasis === 'equal' ? 'ETF.run 等权PE分位' : '加权PE分位',
+          peText: idx && idx.pe !== null && idx.pe !== undefined ? String(idx.pe) : '--',
+          pbText: idx && idx.pb !== null && idx.pb !== undefined ? String(idx.pb) : '--',
+          pePctText: idx && idx.pe_pct !== null && idx.pe_pct !== undefined ? idx.pe_pct + '%' : '--',
+          pbPctText: idx && idx.pb_pct !== null && idx.pb_pct !== undefined ? idx.pb_pct + '%' : '--',
           // 红利指数：股息率与股息率分位、加权有效分位
           dividend: cfg.symbol === 'dividend',
           effPctText: cfg.symbol === 'dividend' && effPct !== null ? effPct + '%' : '--',
-          dyText: cfg.symbol === 'dividend' && idx && idx.dividend_yield !== null && idx.dividend_yield !== undefined
+          dyText: idx && idx.dividend_yield !== null && idx.dividend_yield !== undefined
             ? idx.dividend_yield + '%' : '--',
           dyPctText: dyPct !== null ? dyPct + '%' : '--',
           plan, grid, actionColor,

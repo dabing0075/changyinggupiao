@@ -1,4 +1,4 @@
-const { INDICES, tierOf, tempOf, effPctOf, buildReminders, fmtWan } = require('./strategy')
+const { INDICES, tierFor, tempOf, effPctOf, buildReminders, fmtWan } = require('./strategy')
 
 function today() {
   const d = new Date()
@@ -16,10 +16,11 @@ function buildMessageCandidates({ holdings, settings, market, watchlist, trades 
   const merged = (holdings || []).map((h) => {
     const cfg = INDICES.find((i) => i.symbol === h.symbol)
     const m = cfg ? bySymbol[cfg.indexCode] : null
-    const base = h.valuation_pct !== null && h.valuation_pct !== undefined
-      ? h.valuation_pct
-      : (m && m.valuation_pct !== null && m.valuation_pct !== undefined ? m.valuation_pct : null)
-    return { ...h, valuation_pct: effPctOf(cfg, base, m && m.dividend_pct) }
+    const mPct = m && m.valuation_pct !== null && m.valuation_pct !== undefined ? Number(m.valuation_pct) : null
+    const hPct = h.valuation_pct !== null && h.valuation_pct !== undefined ? Number(h.valuation_pct) : null
+    const base = mPct !== null ? mPct : hPct
+    const dy = m && m.dividend_yield !== null && m.dividend_yield !== undefined ? Number(m.dividend_yield) : null
+    return { ...h, valuation_pct: effPctOf(cfg, base, m && m.dividend_pct), dividend_yield: dy }
   })
   buildReminders(merged, settings).forEach((r) => {
     msgs.push({
@@ -31,11 +32,14 @@ function buildMessageCandidates({ holdings, settings, market, watchlist, trades 
   // 2) 八大标的：指数估值档位信号 + ETF网格触发
   INDICES.forEach((cfg) => {
     const idx = bySymbol[cfg.indexCode]
-    // 估值档位信号（按指数分位；红利按 PE分位×10% + (100−股息率分位)×90% 加权）
+    // 估值档位信号：分位来自云端（红利按股息率水位，其余按各自口径分位）
     const idxPct = idx && idx.valuation_pct !== null && idx.valuation_pct !== undefined ? Number(idx.valuation_pct) : null
     const effPct = idx ? effPctOf(cfg, idxPct, idx.dividend_pct) : null
     if (effPct !== null) {
-      const tier = tierOf(effPct)
+      const tier = tierFor(cfg, {
+        valuation_pct: effPct,
+        dividend_yield: idx && idx.dividend_yield !== undefined ? idx.dividend_yield : null,
+      })
       const dyNote = cfg.symbol === 'dividend' && idx.dividend_yield !== null && idx.dividend_yield !== undefined
         ? '（PE分位' + idxPct + '%，股息率' + idx.dividend_yield + '%、股息率分位'
           + (idx.dividend_pct !== null && idx.dividend_pct !== undefined ? idx.dividend_pct + '%' : '--')

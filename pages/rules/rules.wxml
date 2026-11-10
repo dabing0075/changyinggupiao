@@ -1,17 +1,17 @@
 <!-- 估值档位买卖对照表 -->
 <view class="card">
   <view class="card-title"><text>估值档位买卖对照</text></view>
-  <view class="muted" style="margin-bottom:12rpx;">目标/上限均为标的在权益中的占比；红利看股息率+PE，其余看十年PE分位。低估≤30% / 合理30~70% / 偏高70~85% / 高估>85%。</view>
+  <view class="muted" style="margin-bottom:12rpx;">目标/上限均为标的在权益中的占比。估值采用 ETF.run 等权口径（复刻 E大全市场估值图）：低估≤25% / 合理25~60% / 偏高60~80% / 高估>80%；红利按股息率水位。中概互联网、恒生科技该源无数据，改用雪球基金（Wind）加权PE分位（≤30% / 30~70% / 70~85% / >85%）。</view>
   <scroll-view scroll-x style="white-space:nowrap;">
     <view class="rtable">
       <view class="rtr rth">
         <text class="rtc" style="width:140rpx;">指数</text>
         <text class="rtc" style="width:100rpx;">目标</text>
         <text class="rtc" style="width:100rpx;">上限</text>
-        <text class="rtc" style="width:300rpx;">低估≤30%</text>
-        <text class="rtc" style="width:240rpx;">合理30~70%</text>
-        <text class="rtc" style="width:220rpx;">偏高70~85%</text>
-        <text class="rtc" style="width:260rpx;">高估>85%</text>
+        <text class="rtc" style="width:300rpx;">低估≤25%（加权≤30%）</text>
+        <text class="rtc" style="width:240rpx;">合理25~60%（30~70%）</text>
+        <text class="rtc" style="width:220rpx;">偏高60~80%（70~85%）</text>
+        <text class="rtc" style="width:260rpx;">高估>80%（>85%）</text>
       </view>
       <view wx:for="{{indices}}" wx:key="symbol" class="rtr">
         <text class="rtc" style="width:140rpx;font-weight:600;">{{item.name}}</text>

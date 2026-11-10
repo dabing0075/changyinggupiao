@@ -36,3 +36,278 @@
   background: #1e8e3e;
   color: #fff;
 }
+
+/* ===== E大「关键点位」 ===== */
+.kp-wrap {
+  margin-top: 28rpx;
+  padding: 0 24rpx 8rpx;
+}
+
+.kp-head {
+  padding: 22rpx 24rpx;
+  background: linear-gradient(180deg, #1f4e8c 0%, #2a5ea8 100%);
+  border-radius: 16rpx 16rpx 0 0;
+  color: #fff;
+}
+
+.kp-head-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  letter-spacing: 1rpx;
+}
+
+.kp-head-sub {
+  margin-top: 6rpx;
+  font-size: 21rpx;
+  color: #d6e4f7;
+  line-height: 1.5;
+}
+
+.kp-card {
+  padding: 26rpx 24rpx 22rpx;
+  background: #fdfefe;
+  border: 1rpx solid #e8ecf2;
+  border-top: none;
+}
+
+.kp-body {
+  border-radius: 0 0 16rpx 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 10rpx rgba(31, 78, 140, 0.05);
+}
+
+.kp-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kp-name-wrap {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.kp-name {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #1b1b1b;
+}
+
+.kp-code {
+  margin-left: 14rpx;
+  padding: 2rpx 10rpx;
+  font-size: 20rpx;
+  color: #8a94a6;
+  border: 1rpx solid #dbe2ec;
+  border-radius: 6rpx;
+}
+
+.kp-price {
+  padding: 4rpx 18rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #c0392b;
+  border: 2rpx solid #e28d84;
+  border-radius: 8rpx;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.kp-price-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.kp-asof {
+  margin-top: 4rpx;
+  font-size: 18rpx;
+  color: #9aa4b2;
+  line-height: 1;
+}
+
+.kp-dist-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8rpx 26rpx;
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  color: #6b7785;
+}
+
+/* 支撑区间年化上移提示 */
+.kp-drift {
+  padding: 2rpx 14rpx;
+  font-size: 19rpx;
+  font-weight: 600;
+  color: #1f4e8c;
+  background: #e8f0fb;
+  border-radius: 999rpx;
+}
+
+.kp-drift-tip {
+  margin-top: 8rpx;
+  padding: 8rpx 14rpx;
+  font-size: 20rpx;
+  color: #1f4e8c;
+  line-height: 1.6;
+  background: #f0f5fc;
+  border-left: 4rpx solid #7aa7e0;
+  border-radius: 0 8rpx 8rpx 0;
+}
+
+.kp-neg {
+  color: #1e8e3e;
+  font-weight: 700;
+}
+
+.kp-pos {
+  color: #c0392b;
+  font-weight: 700;
+}
+
+/* 色带 */
+.kp-bar {
+  position: relative;
+  display: flex;
+  height: 30rpx;
+  margin-top: 16rpx;
+  border-radius: 4rpx;
+}
+
+.kp-seg {
+  height: 100%;
+}
+
+.seg-support {
+  background: #2ec4c9;
+  border-radius: 4rpx 0 0 4rpx;
+}
+
+.seg-fair {
+  background: #f7b733;
+}
+
+.seg-over {
+  background: #f9dce0;
+  border-radius: 0 4rpx 4rpx 0;
+}
+
+/* 竖线标记 */
+.kp-mark {
+  position: absolute;
+  top: -6rpx;
+  bottom: -6rpx;
+  width: 0;
+  border-left: 3rpx solid transparent;
+  transform: translateX(-1.5rpx);
+}
+
+.mark-sup {
+  border-left-color: #1e8e3e;
+}
+
+.mark-sky {
+  border-left-color: #c0392b;
+}
+
+/* 分批区 */
+.kp-band {
+  position: absolute;
+  top: -4rpx;
+  bottom: -4rpx;
+  background: rgba(247, 183, 51, 0.32);
+  border: 1rpx dashed #d99414;
+  border-radius: 3rpx;
+}
+
+/* 当下点位 */
+.kp-now {
+  position: absolute;
+  top: -10rpx;
+  bottom: -10rpx;
+  width: 4rpx;
+  margin-left: -2rpx;
+  background: #2b2b2b;
+  border-radius: 2rpx;
+}
+
+.kp-now::after {
+  content: '';
+  position: absolute;
+  top: -8rpx;
+  left: 50%;
+  margin-left: -8rpx;
+  width: 0;
+  height: 0;
+  border-left: 8rpx solid transparent;
+  border-right: 8rpx solid transparent;
+  border-top: 10rpx solid #2b2b2b;
+}
+
+/* 标签层 */
+.kp-label-layer {
+  position: relative;
+  height: 62rpx;
+  margin-top: 8rpx;
+}
+
+.kp-label {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+}
+
+.la-center {
+  transform: translateX(-50%);
+  align-items: center;
+}
+
+.la-start {
+  transform: translateX(0);
+  align-items: flex-start;
+}
+
+.la-end {
+  transform: translateX(-100%);
+  align-items: flex-end;
+}
+
+.kp-label-num {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #1e8e3e;
+  line-height: 1.3;
+}
+
+.kp-label-txt {
+  font-size: 19rpx;
+  color: #7d8794;
+  line-height: 1.3;
+}
+
+.kp-red {
+  color: #c0392b;
+}
+
+.kp-note {
+  margin-top: 6rpx;
+  padding: 10rpx 14rpx;
+  font-size: 21rpx;
+  color: #7a8494;
+  line-height: 1.6;
+  background: #f6f8fb;
+  border-radius: 8rpx;
+}
+
+.kp-foot {
+  padding: 18rpx 8rpx 4rpx;
+  font-size: 20rpx;
+  color: #9aa4b2;
+  line-height: 1.7;
+}

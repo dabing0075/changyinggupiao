@@ -1,12 +1,15 @@
 const store = require('../../utils/store')
 const { WATCHLIST_SNAPSHOT } = require('../../utils/watchlist-seed')
 const { loadMarket, isTradingHours, fmtTime } = require('../../utils/market')
+const { buildKeyPoints, KEY_POINTS_DATE } = require('../../utils/keypoints')
 
 Page({
   data: {
     session: null,
     loading: true,
     items: [],
+    keyPoints: [],
+    kpDate: KEY_POINTS_DATE,
     importing: false,
     marketTime: '',
     trading: false,
@@ -89,7 +92,10 @@ Page({
           statusText, statusCls,
         }
       })
-      this.setData({ loading: false, items, marketTime: fmtTime(latest), trading: isTradingHours(), triggered })
+      this.setData({
+        loading: false, items, marketTime: fmtTime(latest), trading: isTradingHours(), triggered,
+        keyPoints: buildKeyPoints(market),
+      })
     } catch (e) {
       this.setData({ loading: false })
       if (!silent) wx.showToast({ title: '加载失败', icon: 'none' })

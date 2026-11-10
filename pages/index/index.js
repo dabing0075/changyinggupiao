@@ -1,5 +1,5 @@
 const store = require('../../utils/store')
-const { INDICES, tierOf, tempOfPct, effPctOf, buildReminders, fmtWan } = require('../../utils/strategy')
+const { INDICES, tempOfPct, effPctOf, tierFor, buildReminders, fmtWan } = require('../../utils/strategy')
 const { loadMarket, fmtTime } = require('../../utils/market')
 const { refreshTabBadge } = require('../../utils/messages')
 
@@ -111,14 +111,16 @@ Page({
     Object.keys(bySymbol).forEach((k) => {
       if (bySymbol[k].updated_at > latest) latest = bySymbol[k].updated_at
     })
-    // 指数行情补齐未手工录入的估值分位；红利指数取 PE分位 与 (100−股息率分位) 之大者
+    // 指数行情（云端）优先提供估值分位与股息率；手工录入值作兜底
+    // 口径由 cfg.valuationBasis 决定：equal=ETF.run 等权分位，cap=加权分位
     const merged = holdings.map((h) => {
       const cfg = INDICES.find((i) => i.symbol === h.symbol)
       const m = cfg ? bySymbol[cfg.indexCode] : null
-      const base = h.valuation_pct !== null && h.valuation_pct !== undefined
-        ? h.valuation_pct
-        : (m && m.valuation_pct !== null && m.valuation_pct !== undefined ? m.valuation_pct : null)
-      return { ...h, valuation_pct: effPctOf(cfg, base, m && m.dividend_pct) }
+      const mPct = m && m.valuation_pct !== null && m.valuation_pct !== undefined ? Number(m.valuation_pct) : null
+      const hPct = h.valuation_pct !== null && h.valuation_pct !== undefined ? Number(h.valuation_pct) : null
+      const base = mPct !== null ? mPct : hPct
+      const dy = m && m.dividend_yield !== null && m.dividend_yield !== undefined ? Number(m.dividend_yield) : null
+      return { ...h, valuation_pct: effPctOf(cfg, base, m && m.dividend_pct), dividend_yield: dy }
     })
     // 全市场温度：按中证全指十年PE分位自动判定
     const marketRow = bySymbol['sh000985']
@@ -144,7 +146,7 @@ Page({
       // 上限比例 = 标的在权益中的上限占比 × 权益占比；实际比例超过上限即预警
       const capLimit = cfg.capWeight ? cfg.capWeight * capRatio : null
       const capWarn = capLimit !== null && actual > capLimit
-      const tier = tierOf(h.valuation_pct !== null && h.valuation_pct !== undefined ? Number(h.valuation_pct) : null)
+      const tier = tierFor(cfg, h)
       const wan = (n) => Math.round(n / 100) / 100
       return {
         symbol: cfg.symbol, name: cfg.name, code: cfg.code, type: cfg.type,

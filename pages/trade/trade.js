@@ -1,5 +1,5 @@
 const store = require('../../utils/store')
-const { INDICES, tierOf } = require('../../utils/strategy')
+const { INDICES, tierFor } = require('../../utils/strategy')
 
 Page({
   data: {
@@ -164,7 +164,7 @@ Page({
       return
     }
     const pct = this.data.pct !== '' ? Number(this.data.pct) : null
-    const tier = tierOf(pct)
+    const tier = tierFor(cfg, { valuation_pct: pct })
     // E大红线校验：买入时估值>70%分位禁止新增
     if (this.data.direction === 'buy' && tier && (tier.key === 'high' || tier.key === 'over')) {
       wx.showModal({

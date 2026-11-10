@@ -3,7 +3,7 @@
 
 <block wx:else>
   <view class="card" style="padding:20rpx 28rpx;">
-    <view class="muted">八大指数估值分位与点位由云端自动更新（{{marketTime || '—'}}），档位变化会同步生成「消息」提醒。当前市场温度：<text style="color:#8c1f28;">{{tempLabel}}</text>，权益上限 {{equityCapAmount/10000}}万。</view>
+    <view class="muted">八大指数估值（ETF.run 等权口径）与点位由云端自动更新（{{marketTime || '—'}}），档位变化会同步生成「消息」提醒。当前市场温度：<text style="color:#8c1f28;">{{tempLabel}}</text>，权益上限 {{equityCapAmount/10000}}万。</view>
   </view>
 
   <view wx:for="{{cards}}" wx:key="symbol" class="card">
@@ -27,8 +27,25 @@
         <view style="font-size:32rpx;font-weight:700;" class="{{item.chgClass}}">{{item.chgText}}</view>
       </view>
       <view style="text-align:right;">
-        <view class="muted" style="font-size:22rpx;">十年PE分位</view>
+        <view class="muted" style="font-size:22rpx;">估值分位</view>
         <view style="font-size:32rpx;font-weight:700;color:{{item.pctColor}};">{{item.pctText}}</view>
+        <view class="muted" style="font-size:18rpx;">{{item.basisText}}</view>
+      </view>
+    </view>
+
+    <!-- E大口径估值：市盈率 / 市净率 / 股息率 -->
+    <view class="row between" style="margin-top:12rpx;padding:16rpx 20rpx;background:#f7f9fc;border-radius:12rpx;">
+      <view>
+        <view class="muted" style="font-size:22rpx;">市盈率 PE</view>
+        <view style="font-size:28rpx;font-weight:600;">{{item.peText}}</view>
+      </view>
+      <view style="text-align:center;">
+        <view class="muted" style="font-size:22rpx;">市净率 PB</view>
+        <view style="font-size:28rpx;font-weight:600;">{{item.pbText}}</view>
+      </view>
+      <view style="text-align:right;">
+        <view class="muted" style="font-size:22rpx;">股息率</view>
+        <view style="font-size:28rpx;font-weight:600;">{{item.dyText || '--'}}</view>
       </view>
     </view>
 
@@ -48,7 +65,7 @@
           <view style="font-size:32rpx;font-weight:700;color:{{item.tierColor}};">{{item.effPctText}}</view>
         </view>
       </view>
-      <view class="muted" style="font-size:20rpx;margin-top:8rpx;">有效分位 = PE分位×10% + (100−股息率分位)×90%，分位越高越贵；档位标签与操作提醒按有效分位判定。</view>
+      <view class="muted" style="font-size:20rpx;margin-top:8rpx;">红利档位按股息率绝对水位判定：≥5% 极低估 · 4~5% 低估 · 3~4% 合理 · 2.5~3% 偏高 · &lt;2.5% 高估。</view>
     </block>
 
     <!-- 操作提醒卡 -->
@@ -69,5 +86,5 @@
     </view>
   </view>
 
-  <view class="risk-tip">档位口径：低估≤30% · 合理30~70% · 偏高70~85% · 高估>85%。红利指数同时看股息率：有效分位 = PE分位×10% + (100−股息率分位)×90%。卫星行业（医药/消费/信息/中概互联网）高估清仓，恒生科技目标持仓为0仅估值跟踪；核心宽基高位只降仓不清仓。实际交易使用对应ETF。</view>
+  <view class="risk-tip">档位口径：ETF.run 等权PE分位——低估≤25% · 合理25~60% · 偏高60~80% · 高估>80%；红利按股息率水位（≥5%/4~5%/3~4%/2.5~3%/&lt;2.5%）。中概互联网、恒生科技该源无数据，改用雪球基金（Wind）加权PE分位口径（低估≤30% · 合理30~70% · 偏高70~85% · 高估>85%），来源已标注。卫星行业（医药/消费/中概互联网）高估清仓，信息指数与恒生科技目标持仓为0仅估值跟踪；核心宽基高位只降仓不清仓。实际交易使用对应ETF。</view>
 </block>
